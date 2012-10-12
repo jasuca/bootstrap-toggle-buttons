@@ -10,24 +10,24 @@
   };
 
   $.fn.toggleButtons = function (method) {
-    var $element
-      , $div
-      , transitionSpeed = 0.05
-      , methods = {
+    var $element,
+        $div,
+        transitionSpeed = 0.05,
+        methods = {
         init: function (opt) {
           this.each(function () {
-              var $spanLeft
-                , $spanRight
-                , options
-                , moving
-                , dataAttribute = {};
+              var $spanLeft,
+                  $spanRight,
+                  options,
+                  moving,
+                  dataAttribute = {};
 
               $element = $(this);
               $element.addClass('toggle-button');
 
               $.each($element.data(), function (i, el) {
-                var key
-                  , tmp = {};
+                var key,
+                    tmp = {};
 
                 if (i.indexOf("togglebutton") === 0) {
                   key = i.match(/[A-Z][a-z]+/g);
@@ -118,6 +118,8 @@
               else $spanRight.addClass(options.style.disabled);
 
               var changeStatus = function ($this) {
+                if ($this.closest('.toggle-button').is('.deactivate')) return false;
+
                 $this.siblings('label').trigger('mousedown').trigger('mouseup').trigger('click');
               };
 
@@ -129,9 +131,9 @@
               });
 
               $('.toggle-button').find('input').on('change', function (e) {
-                var $element = $(this).parent()
-                  , active = $(this).is(':checked')
-                  , $toggleButton = $(this).closest('.toggle-button');
+                var $element = $(this).parent(),
+                    active = $(this).is(':checked'),
+                    $toggleButton = $(this).closest('.toggle-button');
 
                 e.preventDefault();
                 e.stopImmediatePropagation();
@@ -152,9 +154,9 @@
                   $(this).unbind('click');
                 else {
                   $(this).on('mousemove', function (e) {
-                    var $element = $(this).closest('.toggle-button')
-                      , relativeX = e.pageX - $element.offset().left
-                      , percent = ((relativeX / (options.width * 2)) * 100);
+                    var $element = $(this).closest('.toggle-button'),
+                        relativeX = e.pageX - $element.offset().left,
+                        percent = ((relativeX / (options.width * 2)) * 100);
                     moving = true;
 
                     if (percent < 25)
@@ -162,12 +164,12 @@
                     else if (percent > 75)
                       percent = 75;
 
-                    $element.find('>div').css('left', (percent - 75) + "%")
+                    $element.find('>div').css('left', (percent - 75) + "%");
                   });
 
                   $(this).on('click', function (e) {
-                    var $target = $(e.target)
-                      , $myCheckBox = $target.siblings('input');
+                    var $target = $(e.target),
+                        $myCheckBox = $target.siblings('input');
 
                     e.stopImmediatePropagation();
                     e.preventDefault();
@@ -212,12 +214,20 @@
         toggleActivation: function () {
           $(this).toggleClass('deactivate');
         },
+        setActivation: function(value) {
+          if (value) {
+            $(this).removeClass('deactivate');
+          }
+          else {
+            $(this).addClass('deactivate');
+          }
+        },
         toggleState: function () {
           var $input = $(this).find('input');
-          $input.attr('checked', !$input.is(':checked')).trigger('change')
+          $input.attr('checked', !$input.is(':checked')).trigger('change');
         },
         setState: function(value) {
-          $(this).find('input').attr('checked', value).trigger('change')
+          $(this).find('input').attr('checked', value).trigger('change');
         }
       };
 
